@@ -54,7 +54,18 @@ td{padding:8px 10px;border-top:1px solid #EEF2F7;vertical-align:top}
 .note{background:var(--bluebg);border-radius:10px;padding:12px 14px;color:var(--navy)}
 .warnbox{background:var(--amberbg);border:1px solid #F1D9A4;border-radius:10px;padding:12px 14px}
 .err{background:var(--redbg);color:var(--red);border-radius:10px;padding:12px 14px}
-.load{color:var(--mut);padding:20px;text-align:center}
+.load{color:var(--mut);padding:20px;display:flex;align-items:center;justify-content:center;gap:10px}
+.load::before{content:'';width:18px;height:18px;border:3px solid rgba(31,56,100,.18);border-top-color:var(--navy);border-radius:50%;animation:hsdSpin .8s linear infinite;flex:none}
+.load.inl{padding:6px 0;justify-content:flex-start;font-size:13px}
+@keyframes hsdSpin{to{transform:rotate(360deg)}}
+@keyframes hsdBar{0%{left:-40%}100%{left:100%}}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:hsdSpin .8s linear infinite;vertical-align:-2px}
+.spin.dk{border-color:rgba(31,56,100,.25);border-top-color:currentColor}
+#hsdBusy{display:none}#hsdBusy.on{display:block}
+#hsdBusy .bbar{position:fixed;top:0;left:0;right:0;height:3px;z-index:50;overflow:hidden;background:rgba(31,56,100,.15)}
+#hsdBusy .bbar::after{content:'';position:absolute;top:0;bottom:0;width:40%;background:linear-gradient(90deg,transparent,var(--yel),#5B7FC0,transparent);animation:hsdBar 1.1s ease-in-out infinite}
+#hsdBusy .bpill{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:51;display:none;align-items:center;gap:8px;background:var(--ink);color:#fff;padding:8px 16px 8px 12px;border-radius:999px;font-size:13px;font-weight:600;box-shadow:0 8px 22px rgba(0,0,0,.25);font-variant-numeric:tabular-nums}
+#hsdBusy.pill .bpill{display:flex}
 .side{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
 .side>.mainc{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:16px}
 .side>.aside{flex:1 1 300px;display:flex;flex-direction:column;gap:10px}
@@ -83,15 +94,33 @@ var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct',
 function d(iso) { var m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? Number(m[3]) + ' ' + MON[Number(m[2]) - 1] + ' ' + m[1] : (iso || ''); }
 function toast(m) { var t = $('toast'); t.textContent = m; t.style.display = 'block'; clearTimeout(t._t); t._t = setTimeout(function () { t.style.display = 'none'; }, 4000); }
 function go(view, params) { var p = Object.assign({ v: view }, params || {}); location.search = '?' + Object.keys(p).filter(function (k) { return p[k]; }).map(function (k) { return k + '=' + encodeURIComponent(p[k]); }).join('&'); }
+/* Working indicator: every call shows a slim bar at the top and, after a moment, a "Working…" pill with the seconds,
+   so the page never looks dead while it waits (sign-in included). */
+var BUSY = { n: 0, t0: 0, tick: null, label: '' };
+function busyUi(d, label) {
+  BUSY.n = Math.max(0, BUSY.n + d);
+  var w = $('hsdBusy');
+  if (!w) { w = document.createElement('div'); w.id = 'hsdBusy'; w.innerHTML = '<div class="bbar"></div><div class="bpill" role="status" aria-live="polite"><span class="spin"></span><span id="hsdBusyT">Working…</span></div>'; document.body.appendChild(w); }
+  if (label) BUSY.label = label;
+  if (d > 0 && BUSY.n === 1) {
+    BUSY.t0 = Date.now(); w.className = 'on'; clearInterval(BUSY.tick);
+    BUSY.tick = setInterval(function () { var s = (Date.now() - BUSY.t0) / 1000; if (s > 0.3) w.className = 'on pill'; var t = $('hsdBusyT'); if (t) t.textContent = (BUSY.label || 'Working…') + ' ' + s.toFixed(1) + 's'; }, 100);
+  }
+  if (BUSY.n === 0) { clearInterval(BUSY.tick); w.className = ''; BUSY.label = ''; }
+}
 function api(action, data) {
-  return fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ hsd: action, s: SES }, data || {})) })
+  busyUi(1, action === 'google' || action === 'verify' ? 'Signing in…' : action === 'me' ? 'Opening…' : '');
+  var done = function () { busyUi(-1); };
+  var p = fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ hsd: action, s: SES }, data || {})) })
     .then(function (r) { return r.json(); })
     .then(function (j) {
       if (!j.ok) { if (j.error === 'SIGNIN') { signOut(true); throw new Error('Please sign in again'); } throw new Error(j.error || 'Something went wrong'); }
       return j;
     });
+  p.then(done, done);
+  return p;
 }
-function busy(btn, on) { if (btn) { btn.disabled = on; if (on) { btn._t = btn.textContent; btn.textContent = 'Please wait…'; } else if (btn._t) btn.textContent = btn._t; } }
+function busy(btn, on) { if (btn) { btn.disabled = on; if (on) { btn._t = btn.textContent; btn.innerHTML = '<span class="spin dk"></span> Please wait…'; } else if (btn._t) btn.textContent = btn._t; } }
 function fail(e, btn) { busy(btn, false); toast(e.message || String(e)); }
 function stCls(s) { return String(s || '').split(' ')[0]; }
 function setHeader(t) { $('hdT').textContent = t; $('hdU').innerHTML = ME ? '<span class="pill">' + h(ME.email) + '</span>' + (ME.reviewer ? '<span class="pill y">Reviewer</span>' : '') + '<a href="#" class="pill" style="color:#fff;text-decoration:none" onclick="signOut();return false">Sign out</a>' : ''; }
@@ -104,13 +133,14 @@ function showSignIn(msg) {
   setHeader('Project HSE Staff Update');
   $('app').innerHTML = '<div class="card" style="max-width:520px;margin:20px auto"><h2>Sign in</h2>' + (msg ? '<div class="err" style="margin-bottom:10px">' + h(msg) + '</div>' : '') +
     '<p class="mut">Use the e-mail the system knows you by: the HSE Manager e-mail of your project (Master Data), or the e-mail your HSE Manager allowed.</p>' +
-    '<div id="gbtn" style="margin:14px 0"></div><div class="mut sm" style="margin:8px 0 14px">— or —</div>' +
+    '<div id="gbtn" style="margin:14px 0"><span class="load inl">Loading Google sign-in…</span></div><div class="mut sm" style="margin:8px 0 14px">— or —</div>' +
     '<label for="em">Get a code by e-mail</label><div class="row"><input id="em" type="email" placeholder="you@gpsoman.com" style="flex:1 1 220px"><button class="btn sec" onclick="sendCode(this)">Send code</button></div>' +
     '<div id="codeBox" style="display:none;margin-top:12px"><label for="cd">Code from the e-mail</label><div class="row"><input id="cd" inputmode="numeric" maxlength="6" style="flex:1 1 140px"><button class="btn" onclick="checkCode(this)">Sign in</button></div></div></div>';
   api('config').then(function (c) {
     var tryG = function (n) {
       if (window.google && google.accounts && google.accounts.id) {
-        google.accounts.id.initialize({ client_id: c.clientId, callback: function (resp) { api('google', { idToken: resp.credential }).then(signedIn).catch(function (e) { showSignIn(e.message); }); } });
+        google.accounts.id.initialize({ client_id: c.clientId, callback: function (resp) { $('app').innerHTML = '<div class="card" style="max-width:520px;margin:20px auto"><div class="load">Signing in — please wait…</div></div>'; api('google', { idToken: resp.credential }).then(signedIn).catch(function (e) { showSignIn(e.message); }); } });
+        $('gbtn').innerHTML = '';
         google.accounts.id.renderButton($('gbtn'), { theme: 'outline', size: 'large', text: 'continue_with', width: 280 });
       } else if (n < 40) setTimeout(function () { tryG(n + 1); }, 150);
     };
@@ -188,9 +218,9 @@ function drawPlan() {
         '<td>' + stc + '<div><label style="display:inline-flex;gap:5px;align-items:center;margin-top:6px;font-weight:500"><input type="checkbox"' + (l.remove ? ' checked' : '') + ' onchange="PLAN.edit[' + l._i + '].remove=this.checked;drawPlan()"> remove</label></div></td></tr>';
     }).join('');
   }).join('');
-  $('app').innerHTML = '<div>' + back() + '</div><div class="note">Plan the leave of <b>every</b> employee from ' + d(r.from) + ' to ' + d(r.to) + '. The CHSEM or Amal approves each line. A change shows as <b>Change pending</b> until approved; the approved dates stay in force until then.</div>' +
+  $('app').innerHTML = '<div>' + back() + '</div><div class="note">Plan the leave of <b>every</b> employee from ' + d(r.from) + ' to ' + d(r.to) + '. The CHSEM approves each line. A change shows as <b>Change pending</b> until approved; the approved dates stay in force until then.</div>' +
     '<div class="card"><h2>' + h(r.project) + ' · ' + r.staff.length + ' employees</h2><div class="scroll"><table><tr><th>Employee</th><th>Leave type</th><th>From</th><th>To</th><th>State</th></tr>' + rows + '</table></div></div>' +
-    '<div class="card row" style="justify-content:space-between;background:var(--navy);color:#fff"><span>Only new and changed lines are sent · to the CHSEM, copy to Amal</span><button class="btn y" onclick="planSubmit(this)">Submit plan for approval</button></div>';
+    '<div class="card row" style="justify-content:space-between;background:var(--navy);color:#fff"><span>Only new and changed lines are sent · to the CHSEM, copy to the Corporate HSE Department</span><button class="btn y" onclick="planSubmit(this)">Submit plan for approval</button></div>';
 }
 function planAdd(id) { var s = PLAN.staff.filter(function (x) { return x.id === id; })[0]; PLAN.edit.push({ empId: id, name: s.name, type: 'Annual', from: '', to: '', state: '' }); drawPlan(); }
 function planSubmit(btn) {
@@ -224,9 +254,9 @@ function drawLeave() {
     '<div class="card"><h2>Attachments</h2>' + (have.length ? '<div class="mut sm" style="margin-bottom:8px">Already attached: ' + have.map(function (x) { return '<a href="' + h(x.url) + '" target="_blank" rel="noopener">' + h(x.label) + '</a>'; }).join(' · ') + '</div>' : '') +
     '<div class="grid"><div><label for="fF">Leave form ' + (hasForm ? '(attached — add again only to replace)' : '<span style="color:var(--red)">required</span>') + '</label><input id="fF" type="file"></div>' +
     '<div><label for="fM">Medical certificate (if applicable)</label><input id="fM" type="file"></div><div><label for="fO">Other documents (if applicable)</label><input id="fO" type="file" multiple></div></div><div class="mut sm" style="margin-top:6px">Up to 8 MB per file.</div></div>' +
-    '<div class="card"><h2>Keep informed (CC)</h2><label for="lvCc">E-mails, separated by commas</label><input id="lvCc" value="' + h(a.cc || '') + '" placeholder="project.manager@gpsoman.com, site.admin@gpsoman.com"><div class="mut sm" style="margin-top:6px">They get the application and the approval. The CHSEM, Amal and the HO HSE team are always included.</div></div>' +
+    '<div class="card"><h2>Keep informed (CC)</h2><label for="lvCc">E-mails, separated by commas</label><input id="lvCc" value="' + h(a.cc || '') + '" placeholder="project.manager@gpsoman.com, site.admin@gpsoman.com"><div class="mut sm" style="margin-top:6px">They get the application and the approval. The CHSEM and the Corporate HSE Department are always included.</div></div>' +
     '</div><div class="aside"><div class="card"><h2 style="font-size:16px">Checks</h2><div id="lvChecks" class="mut sm">Choose the employee and the dates.</div></div>' +
-    '<button class="btn y" onclick="lvSubmit(this)">' + (a.id ? 'Submit again' : 'Submit for approval') + '</button><span class="mut sm">Goes to the CHSEM (copy to Amal, the HO HSE team and your CCs). Emergency leave can be submitted up to 2 days after it started.</span></div></div>';
+    '<button class="btn y" onclick="lvSubmit(this)">' + (a.id ? 'Submit again' : 'Submit for approval') + '</button><span class="mut sm">Goes to the CHSEM (copy to the Corporate HSE Department and your CCs). Emergency leave can be submitted up to 2 days after it started.</span></div></div>';
   lvEmp();
 }
 function lvEmp() {
@@ -263,7 +293,7 @@ function lvSubmit(btn) {
     return api('leave.submit', { project: LV.project, app: (LV.app || {}).id || '', empId: $('lvE').value, type: $('lvT').value, from: $('lvF').value, to: $('lvTo').value,
       lastLeave: $('lvLast') ? $('lvLast').value : '', rep: radioVal('rep'), repRemarks: $('repR').value, client: radioVal('cl'), clientRemarks: $('clR').value, cc: $('lvCc').value, files: files });
   }).then(function (r) {
-    $('app').innerHTML = '<div class="card"><h2>Submitted — ' + h(r.id) + '</h2><p>The application went to the CHSEM, with a copy to Amal, the HO HSE team and your CCs. You will get an e-mail when it is decided.</p><div class="row"><a class="btn sec" href="?v=leave&p=' + encodeURIComponent(LV.project) + '" style="text-decoration:none">Another application</a>' + back() + '</div></div>';
+    $('app').innerHTML = '<div class="card"><h2>Submitted — ' + h(r.id) + '</h2><p>The application went to the CHSEM, with a copy to the Corporate HSE Department and your CCs. You will get an e-mail when it is decided.</p><div class="row"><a class="btn sec" href="?v=leave&p=' + encodeURIComponent(LV.project) + '" style="text-decoration:none">Another application</a>' + back() + '</div></div>';
   }).catch(function (e) { fail(e, btn); });
 }
 
