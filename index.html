@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project HSE Staff Update — GPS HSE Department</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+:root{--navy:#1F3864;--navy2:#2C4A7C;--ink:#1B2A3D;--mut:#4A5A70;--line:#DCE3EC;--bg:#F3F6FA;--yel:#F2C14E;--green:#1E6B3A;--greenbg:#E8F5EC;--amber:#8A5A00;--amberbg:#FFF8E8;--red:#8A1C1C;--redbg:#FDECEC;--blue:#1F3864;--bluebg:#EEF4FB}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,Arial,sans-serif;font-size:14px}
+header{background:var(--navy);color:#fff;padding:16px 20px}
+header .in{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+header .k{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#BFD0EA}
+header .t{font-size:21px;font-weight:700}
+.pill{background:var(--navy2);padding:6px 12px;border-radius:999px;font-size:13px}
+.pill.y{background:var(--yel);color:var(--ink);font-weight:600}
+main{max-width:1180px;margin:0 auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px}
+h2{margin:0 0 10px;font-size:18px}
+h3{margin:14px 0 6px;font-size:15px}
+.mut{color:var(--mut)} .sm{font-size:12px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+label,.lb{display:block;font-size:12px;color:var(--mut);font-weight:600;margin-bottom:4px}
+input,select,textarea{font-family:inherit;font-size:14px;padding:8px 10px;border:1px solid #C9D3E0;border-radius:8px;background:#fff;color:var(--ink);min-height:40px;width:100%}
+textarea{min-height:60px}
+input[type=radio],input[type=checkbox]{width:auto;min-height:0}
+.btn{font-family:inherit;font-size:14px;font-weight:600;border-radius:8px;padding:10px 16px;min-height:44px;cursor:pointer;border:1px solid var(--navy);background:var(--navy);color:#fff}
+.btn.sec{background:#fff;color:var(--navy)}
+.btn.y{background:var(--yel);border-color:var(--yel);color:var(--ink);font-weight:700}
+.btn.ok{background:var(--green);border-color:var(--green)}
+.btn.warn{background:#fff;color:var(--amber);border-color:#D9A93D}
+.btn.bad{background:#fff;color:var(--red);border-color:#E3A5A5}
+.btn:disabled{opacity:.5;cursor:wait}
+.tile{display:block;text-decoration:none;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px}
+.tile:hover{border-color:var(--navy)}
+.tile b{display:block;font-size:16px;margin-bottom:4px;color:var(--navy)}
+.scroll{overflow-x:auto;border:1px solid #E6EBF2;border-radius:10px}
+table{width:100%;border-collapse:collapse}
+th{background:#F6F8FB;text-align:left;color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.04em;padding:9px 10px}
+td{padding:8px 10px;border-top:1px solid #EEF2F7;vertical-align:top}
+.st{display:inline-block;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600;background:#EEF2F7;color:var(--mut)}
+.st.Approved{background:var(--greenbg);color:var(--green)} .st.Pending,.st.Waiting,.st.Change{background:#FFF1D6;color:var(--amber)}
+.st.Sent,.st.Rejected{background:var(--redbg);color:var(--red)} .st.Decided{background:var(--greenbg);color:var(--green)}
+.ck{border-radius:8px;padding:9px 12px;font-size:13px;margin-bottom:6px}
+.ck b{display:block}
+.ck.ok{background:var(--greenbg)} .ck.ok b{color:var(--green)}
+.ck.warn{background:var(--amberbg)} .ck.warn b{color:var(--amber)}
+.ck.bad{background:var(--redbg)} .ck.bad b{color:var(--red)}
+.ck.info{background:var(--bluebg)} .ck.info b{color:var(--blue)}
+.note{background:var(--bluebg);border-radius:10px;padding:12px 14px;color:var(--navy)}
+.warnbox{background:var(--amberbg);border:1px solid #F1D9A4;border-radius:10px;padding:12px 14px}
+.err{background:var(--redbg);color:var(--red);border-radius:10px;padding:12px 14px}
+.load{color:var(--mut);padding:20px;text-align:center}
+.side{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+.side>.mainc{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.side>.aside{flex:1 1 300px;display:flex;flex-direction:column;gap:10px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.tabs button{font-family:inherit;font-size:14px;font-weight:600;background:#fff;color:var(--navy);border:1px solid #C9D3E0;border-radius:999px;padding:9px 15px;cursor:pointer}
+.tabs button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+a{color:#1F5FA8}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:8px;display:none;z-index:9;max-width:90%}
+</style>
+</head>
+<body>
+<header><div class="in"><div><div class="k">GPS HSE Department</div><div class="t" id="hdT">Project HSE Staff Update</div></div><div class="row" id="hdU"></div></div></header>
+<main id="app"><div class="load">Loading…</div></main>
+<div id="toast"></div>
+<script>
+/* ===== Settings ===== */
+var ENDPOINT = 'https://script.google.com/macros/s/AKfycbze0oU6IPt96IRssh9gQKUEvZgeoga8UjszP4goSpaeExYPj-kxFZdYA_4H8E7xYA/exec';
+
+/* ===== Basics ===== */
+var Q = {}; location.search.replace(/^\?/, '').split('&').forEach(function (p) { if (!p) return; var i = p.indexOf('='); Q[decodeURIComponent(i < 0 ? p : p.slice(0, i))] = i < 0 ? '' : decodeURIComponent(p.slice(i + 1).replace(/\+/g, ' ')); });
+var ME = null, SES = '';
+try { SES = sessionStorage.getItem('hsd_s') || ''; } catch (e) { SES = ''; }
+function $(id) { return document.getElementById(id); }
+function h(s) { return String(s === undefined || s === null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+function d(iso) { var m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? Number(m[3]) + ' ' + MON[Number(m[2]) - 1] + ' ' + m[1] : (iso || ''); }
+function toast(m) { var t = $('toast'); t.textContent = m; t.style.display = 'block'; clearTimeout(t._t); t._t = setTimeout(function () { t.style.display = 'none'; }, 4000); }
+function go(view, params) { var p = Object.assign({ v: view }, params || {}); location.search = '?' + Object.keys(p).filter(function (k) { return p[k]; }).map(function (k) { return k + '=' + encodeURIComponent(p[k]); }).join('&'); }
+function api(action, data) {
+  return fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ hsd: action, s: SES }, data || {})) })
+    .then(function (r) { return r.json(); })
+    .then(function (j) {
+      if (!j.ok) { if (j.error === 'SIGNIN') { signOut(true); throw new Error('Please sign in again'); } throw new Error(j.error || 'Something went wrong'); }
+      return j;
+    });
+}
+function busy(btn, on) { if (btn) { btn.disabled = on; if (on) { btn._t = btn.textContent; btn.textContent = 'Please wait…'; } else if (btn._t) btn.textContent = btn._t; } }
+function fail(e, btn) { busy(btn, false); toast(e.message || String(e)); }
+function stCls(s) { return String(s || '').split(' ')[0]; }
+function setHeader(t) { $('hdT').textContent = t; $('hdU').innerHTML = ME ? '<span class="pill">' + h(ME.email) + '</span>' + (ME.reviewer ? '<span class="pill y">Reviewer</span>' : '') + '<a href="#" class="pill" style="color:#fff;text-decoration:none" onclick="signOut();return false">Sign out</a>' : ''; }
+function back() { return '<a href="#" onclick="go(\'home\');return false">← All tasks</a>'; }
+
+/* ===== Sign-in ===== */
+function signOut(quiet) { SES = ''; ME = null; try { sessionStorage.removeItem('hsd_s'); } catch (e) {} if (!quiet) location.reload(); else showSignIn(); }
+function signedIn(r) { SES = r.s; ME = r; try { sessionStorage.setItem('hsd_s', SES); } catch (e) {} route(); }
+function showSignIn(msg) {
+  setHeader('Project HSE Staff Update');
+  $('app').innerHTML = '<div class="card" style="max-width:520px;margin:20px auto"><h2>Sign in</h2>' + (msg ? '<div class="err" style="margin-bottom:10px">' + h(msg) + '</div>' : '') +
+    '<p class="mut">Use the e-mail the system knows you by: the HSE Manager e-mail of your project (Master Data), or the e-mail your HSE Manager allowed.</p>' +
+    '<div id="gbtn" style="margin:14px 0"></div><div class="mut sm" style="margin:8px 0 14px">— or —</div>' +
+    '<label for="em">Get a code by e-mail</label><div class="row"><input id="em" type="email" placeholder="you@gpsoman.com" style="flex:1 1 220px"><button class="btn sec" onclick="sendCode(this)">Send code</button></div>' +
+    '<div id="codeBox" style="display:none;margin-top:12px"><label for="cd">Code from the e-mail</label><div class="row"><input id="cd" inputmode="numeric" maxlength="6" style="flex:1 1 140px"><button class="btn" onclick="checkCode(this)">Sign in</button></div></div></div>';
+  api('config').then(function (c) {
+    var tryG = function (n) {
+      if (window.google && google.accounts && google.accounts.id) {
+        google.accounts.id.initialize({ client_id: c.clientId, callback: function (resp) { api('google', { idToken: resp.credential }).then(signedIn).catch(function (e) { showSignIn(e.message); }); } });
+        google.accounts.id.renderButton($('gbtn'), { theme: 'outline', size: 'large', text: 'continue_with', width: 280 });
+      } else if (n < 40) setTimeout(function () { tryG(n + 1); }, 150);
+    };
+    tryG(0);
+  }).catch(function () { });
+}
+function sendCode(btn) { busy(btn, true); api('code', { email: $('em').value }).then(function () { busy(btn, false); $('codeBox').style.display = 'block'; toast('Code sent — check your e-mail'); }).catch(function (e) { fail(e, btn); }); }
+function checkCode(btn) { busy(btn, true); api('verify', { email: $('em').value, code: $('cd').value }).then(signedIn).catch(function (e) { fail(e, btn); }); }
+
+/* ===== Router ===== */
+function route() {
+  if (!SES) return showSignIn();
+  if (!ME) return api('me').then(function (r) { ME = r; route(); }).catch(function (e) { showSignIn(e.message); });
+  var v = Q.v || 'home';
+  if (ME.noAccess) { setHeader('Project HSE Staff Update'); $('app').innerHTML = '<div class="err">Your e-mail (' + h(ME.email) + ') is not set up for any project. Ask your HSE Manager to allow you, or contact HO HSE.</div>'; return; }
+  if (v === 'plan') return showPlan(Q.p);
+  if (v === 'leave') return showLeave(Q.p, Q.a);
+  if (v === 'update') return showUpdate(Q.p, Q.mr, Q.t);
+  if (v === 'review') return Q.a ? showReviewApp(Q.a) : Q.b ? showReviewBatch(Q.b) : showReviewList();
+  showHome();
+}
+function pickProject(p) { if (p && ME.projects.indexOf(p) > -1) return p; return ME.projects.length === 1 ? ME.projects[0] : ''; }
+
+/* ===== Home ===== */
+function showHome() {
+  setHeader('Project HSE Staff Update');
+  var html = '';
+  if (ME.reviewer) html += '<a class="tile" href="?v=review" style="border-color:var(--yel)"><b>Review</b><span class="mut">' + ME.waiting + ' waiting for a decision — leave applications and leave plans</span></a>';
+  ME.projects.forEach(function (p) {
+    var mgr = ME.manages.indexOf(p) > -1, pe = encodeURIComponent(p);
+    html += '<div class="card"><h2>' + h(p) + '</h2><div class="grid">' +
+      '<a class="tile" href="?v=leave&p=' + pe + '"><b>Leave application</b><span class="mut">Someone is going on leave</span></a>' +
+      '<a class="tile" href="?v=plan&p=' + pe + '"><b>Annual leave plan</b><span class="mut">Plan for every employee; changes go for approval</span></a>' +
+      '<a class="tile" href="?v=update&p=' + pe + '"><b>Monthly update</b><span class="mut">Status and work pattern of each person</span></a></div>' +
+      (mgr || ME.reviewer ? '<h3>Also allowed to submit for this project</h3><div class="row"><input id="dg_' + h(p).replace(/\W/g, '_') + '" type="email" value="' + h(ME.delegates[p] || '') + '" placeholder="e.g. your HSE Lead\'s e-mail" style="flex:1 1 260px"><button class="btn sec" onclick="saveDelegate(\'' + h(p).replace(/'/g, "\\'") + '\',this)">Save</button></div><div class="mut sm">One person. Only the HSE Manager can change this.</div>' : '') + '</div>';
+  });
+  $('app').innerHTML = html || '<div class="card">Nothing to show.</div>';
+}
+function saveDelegate(p, btn) {
+  busy(btn, true);
+  api('delegate.set', { project: p, email: $('dg_' + p.replace(/\W/g, '_')).value }).then(function (r) { busy(btn, false); ME.delegates[p] = r.delegate; toast(r.delegate ? 'Saved: ' + r.delegate + ' can submit' : 'Removed'); }).catch(function (e) { fail(e, btn); });
+}
+function needProject(view, p) {
+  p = pickProject(p);
+  if (p) return p;
+  setHeader('Choose the project');
+  $('app').innerHTML = '<div class="card"><h2>Which project?</h2><div class="grid">' + ME.projects.map(function (x) { return '<a class="tile" href="?v=' + view + '&p=' + encodeURIComponent(x) + '"><b>' + h(x) + '</b></a>'; }).join('') + '</div></div>';
+  return '';
+}
+function typeOpts(sel) { return ME.leaveTypes.map(function (t) { return '<option' + (t === sel ? ' selected' : '') + '>' + h(t) + '</option>'; }).join(''); }
+
+/* ===== Annual leave plan ===== */
+var PLAN = null;
+function showPlan(p) {
+  p = needProject('plan', p); if (!p) return;
+  setHeader('Annual leave plan · ' + p);
+  $('app').innerHTML = '<div class="load">Loading the plan…</div>';
+  api('plan.get', { project: p }).then(function (r) { PLAN = r; PLAN.edit = r.lines.map(function (l) { return Object.assign({}, l); }); drawPlan(); }).catch(function (e) { $('app').innerHTML = '<div class="err">' + h(e.message) + '</div>'; });
+}
+function drawPlan() {
+  var r = PLAN, by = {};
+  r.edit.forEach(function (l, i) { l._i = i; (by[l.empId] = by[l.empId] || []).push(l); });
+  var rows = r.staff.map(function (s) {
+    var ls = by[s.id] || [];
+    var head = '<tr><td rowspan="' + Math.max(ls.length, 1) + '"><b>' + h(s.name) + '</b><div class="mut sm">' + h(s.id) + ' · ' + h(s.position) + (s.last ? ' · last leave ' + h(s.last.text) : '') + '</div>' +
+      '<button class="btn sec" style="margin-top:6px;min-height:34px;padding:6px 10px;font-size:13px" onclick="planAdd(\'' + h(s.id) + '\')">+ Add a leave</button></td>';
+    if (!ls.length) return head + '<td colspan="4" class="sm" style="color:var(--red);font-weight:600">Plan needed</td></tr>';
+    return ls.map(function (l, k) {
+      var stc = l.remove ? '<span class="st Sent">To remove</span>' : '<span class="st ' + stCls(l.state || 'New') + '">' + h(l.state || 'New') + '</span>' +
+        (l.state === 'Change pending' || (l.aFrom && (l.aFrom !== l.from || l.aTo !== l.to)) ? '<div class="mut sm">approved: ' + d(l.aFrom) + ' – ' + d(l.aTo) + '</div>' : '') +
+        (l.comment && l.state === 'Sent back' ? '<div class="sm" style="color:var(--amber)">Comment: ' + h(l.comment) + '</div>' : '');
+      return (k ? '<tr>' : head) + '<td><select onchange="PLAN.edit[' + l._i + '].type=this.value">' + typeOpts(l.type) + '</select></td>' +
+        '<td><input type="date" value="' + h(l.from) + '" min="' + r.from + '" onchange="PLAN.edit[' + l._i + '].from=this.value"></td>' +
+        '<td><input type="date" value="' + h(l.to) + '" onchange="PLAN.edit[' + l._i + '].to=this.value"></td>' +
+        '<td>' + stc + '<div><label style="display:inline-flex;gap:5px;align-items:center;margin-top:6px;font-weight:500"><input type="checkbox"' + (l.remove ? ' checked' : '') + ' onchange="PLAN.edit[' + l._i + '].remove=this.checked;drawPlan()"> remove</label></div></td></tr>';
+    }).join('');
+  }).join('');
+  $('app').innerHTML = '<div>' + back() + '</div><div class="note">Plan the leave of <b>every</b> employee from ' + d(r.from) + ' to ' + d(r.to) + '. The CHSEM or Amal approves each line. A change shows as <b>Change pending</b> until approved; the approved dates stay in force until then.</div>' +
+    '<div class="card"><h2>' + h(r.project) + ' · ' + r.staff.length + ' employees</h2><div class="scroll"><table><tr><th>Employee</th><th>Leave type</th><th>From</th><th>To</th><th>State</th></tr>' + rows + '</table></div></div>' +
+    '<div class="card row" style="justify-content:space-between;background:var(--navy);color:#fff"><span>Only new and changed lines are sent · to the CHSEM, copy to Amal</span><button class="btn y" onclick="planSubmit(this)">Submit plan for approval</button></div>';
+}
+function planAdd(id) { var s = PLAN.staff.filter(function (x) { return x.id === id; })[0]; PLAN.edit.push({ empId: id, name: s.name, type: 'Annual', from: '', to: '', state: '' }); drawPlan(); }
+function planSubmit(btn) {
+  var lines = PLAN.edit.filter(function (l) { return l.remove ? l.pid : (l.from || l.to); }).map(function (l) { return { pid: l.pid || '', empId: l.empId, type: l.type, from: l.from, to: l.to, remove: !!l.remove }; });
+  busy(btn, true);
+  api('plan.submit', { project: PLAN.project, lines: lines }).then(function (r) { busy(btn, false); toast(r.sent ? r.sent + ' line(s) sent for approval' : 'Nothing changed'); showPlan(PLAN.project); }).catch(function (e) { fail(e, btn); });
+}
+
+/* ===== Leave application ===== */
+var LV = null, LVT = null;
+function showLeave(p, a) {
+  p = needProject('leave', p); if (!p) return;
+  setHeader('Leave application · ' + p);
+  $('app').innerHTML = '<div class="load">Loading…</div>';
+  api('leave.form', { project: p, app: a || '' }).then(function (r) { LV = r; drawLeave(); }).catch(function (e) { $('app').innerHTML = '<div class="err">' + h(e.message) + '</div>'; });
+}
+function radios(name, list, sel) { return '<div class="row" style="gap:18px">' + list.map(function (x) { return '<label style="display:inline-flex;gap:6px;align-items:center;font-size:14px;color:var(--ink);font-weight:500"><input type="radio" name="' + name + '" value="' + h(x) + '"' + (x === sel ? ' checked' : '') + '> ' + h(x) + '</label>'; }).join('') + '</div>'; }
+function radioVal(name) { var r = document.querySelector('input[name="' + name + '"]:checked'); return r ? r.value : ''; }
+function drawLeave() {
+  var r = LV, a = r.app || {};
+  var empOpts = '<option value="">— choose —</option>' + r.staff.map(function (s) { return '<option value="' + h(s.id) + '"' + (s.id === a.empId ? ' selected' : '') + '>' + h(s.name) + ' (' + h(s.id) + ')</option>'; }).join('');
+  var have = (a.attachments || []);
+  var hasForm = have.some(function (x) { return x.kind === 'form'; });
+  $('app').innerHTML = '<div>' + back() + '</div>' + (a.state === 'Sent back' ? '<div class="warnbox"><b style="color:var(--amber)">Sent back by ' + h(a.decidedBy) + '</b><div>' + h(a.comment) + '</div><div class="mut sm">Change what is needed and submit again.</div></div>' : '') +
+    '<div class="side"><div class="mainc">' +
+    '<div class="card"><h2>Employee</h2><label for="lvE">Name</label><select id="lvE" onchange="lvEmp()">' + empOpts + '</select><div id="lvInfo" style="margin-top:10px"></div></div>' +
+    '<div class="card"><h2>Leave</h2><div class="grid"><div><label for="lvT">Leave type</label><select id="lvT" onchange="lvCheck()">' + typeOpts(a.type || 'Annual') + '</select></div>' +
+    '<div><label for="lvF">From</label><input id="lvF" type="date" value="' + h(a.from || '') + '" onchange="lvCheck()"></div><div><label for="lvTo">To</label><input id="lvTo" type="date" value="' + h(a.to || '') + '" onchange="lvCheck()"></div></div><div id="lvDays" class="mut" style="margin-top:8px"></div></div>' +
+    '<div class="card"><h2>Relief</h2><span class="lb">Replacement required?</span>' + radios('rep', ['Yes', 'No'], a.rep) + '<label for="repR" style="margin-top:8px">Remarks</label><textarea id="repR">' + h(a.repRemarks || '') + '</textarea>' +
+    '<span class="lb" style="margin-top:14px">Client approval needed for the relief?</span>' + radios('cl', ['Yes', 'No', 'Not applicable'], a.client) + '<label for="clR" style="margin-top:8px">Remarks</label><textarea id="clR">' + h(a.clientRemarks || '') + '</textarea></div>' +
+    '<div class="card"><h2>Attachments</h2>' + (have.length ? '<div class="mut sm" style="margin-bottom:8px">Already attached: ' + have.map(function (x) { return '<a href="' + h(x.url) + '" target="_blank" rel="noopener">' + h(x.label) + '</a>'; }).join(' · ') + '</div>' : '') +
+    '<div class="grid"><div><label for="fF">Leave form ' + (hasForm ? '(attached — add again only to replace)' : '<span style="color:var(--red)">required</span>') + '</label><input id="fF" type="file"></div>' +
+    '<div><label for="fM">Medical certificate (if applicable)</label><input id="fM" type="file"></div><div><label for="fO">Other documents (if applicable)</label><input id="fO" type="file" multiple></div></div><div class="mut sm" style="margin-top:6px">Up to 8 MB per file.</div></div>' +
+    '<div class="card"><h2>Keep informed (CC)</h2><label for="lvCc">E-mails, separated by commas</label><input id="lvCc" value="' + h(a.cc || '') + '" placeholder="project.manager@gpsoman.com, site.admin@gpsoman.com"><div class="mut sm" style="margin-top:6px">They get the application and the approval. The CHSEM, Amal and the HO HSE team are always included.</div></div>' +
+    '</div><div class="aside"><div class="card"><h2 style="font-size:16px">Checks</h2><div id="lvChecks" class="mut sm">Choose the employee and the dates.</div></div>' +
+    '<button class="btn y" onclick="lvSubmit(this)">' + (a.id ? 'Submit again' : 'Submit for approval') + '</button><span class="mut sm">Goes to the CHSEM (copy to Amal, the HO HSE team and your CCs). Emergency leave can be submitted up to 2 days after it started.</span></div></div>';
+  lvEmp();
+}
+function lvEmp() {
+  var s = LV.staff.filter(function (x) { return x.id === $('lvE').value; })[0];
+  $('lvInfo').innerHTML = s ? '<div class="grid"><div class="note" style="padding:10px"><span class="lb">Employee ID</span><b>' + h(s.id) + '</b></div><div class="note" style="padding:10px"><span class="lb">Designation</span><b>' + h(s.position) + ' · ' + h(s.nat) + '</b></div>' +
+    '<div class="note" style="padding:10px"><span class="lb">Last leave (from the system)</span>' + (s.last ? '<b>' + h(s.last.text) + '</b>' + (s.last.days !== null ? '<div class="sm">' + s.last.days + ' days since return</div>' : '') : '<input id="lvLast" type="date" aria-label="Last leave date">') + '</div></div>' : '';
+  lvCheck();
+}
+function lvCheck() {
+  var f = $('lvF').value, t = $('lvTo').value, e = $('lvE').value;
+  $('lvDays').textContent = f && t && t >= f ? (Math.round((new Date(t) - new Date(f)) / 864e5) + 1) + ' days' : '';
+  clearTimeout(LVT);
+  if (!e || !f || !t || t < f) return;
+  $('lvChecks').innerHTML = '<span class="mut">Checking…</span>';
+  LVT = setTimeout(function () {
+    api('leave.check', { project: LV.project, empId: e, from: f, to: t, type: $('lvT').value, app: (LV.app || {}).id || '' })
+      .then(function (r) { $('lvChecks').innerHTML = checksHtml(r.checks); }).catch(function (x) { $('lvChecks').textContent = x.message; });
+  }, 400);
+}
+function checksHtml(list) { return (list || []).map(function (c) { return '<div class="ck ' + h(c.level) + '"><b>' + h(c.title) + '</b>' + h(c.text) + '</div>'; }).join('') || '<span class="mut">No checks.</span>'; }
+function readFile(file, kind) {
+  return new Promise(function (res, rej) {
+    if (file.size > 8 * 1024 * 1024) return rej(new Error(file.name + ' is larger than 8 MB'));
+    var r = new FileReader(); r.onload = function () { res({ kind: kind, name: file.name, mime: file.type || 'application/octet-stream', b64: String(r.result).split(',')[1] || '' }); }; r.onerror = function () { rej(r.error); }; r.readAsDataURL(file);
+  });
+}
+function lvSubmit(btn) {
+  var list = [];
+  if ($('fF').files[0]) list.push(readFile($('fF').files[0], 'form'));
+  if ($('fM').files[0]) list.push(readFile($('fM').files[0], 'medical'));
+  [].forEach.call($('fO').files, function (f) { list.push(readFile(f, 'other')); });
+  busy(btn, true);
+  Promise.all(list).then(function (files) {
+    return api('leave.submit', { project: LV.project, app: (LV.app || {}).id || '', empId: $('lvE').value, type: $('lvT').value, from: $('lvF').value, to: $('lvTo').value,
+      lastLeave: $('lvLast') ? $('lvLast').value : '', rep: radioVal('rep'), repRemarks: $('repR').value, client: radioVal('cl'), clientRemarks: $('clR').value, cc: $('lvCc').value, files: files });
+  }).then(function (r) {
+    $('app').innerHTML = '<div class="card"><h2>Submitted — ' + h(r.id) + '</h2><p>The application went to the CHSEM, with a copy to Amal, the HO HSE team and your CCs. You will get an e-mail when it is decided.</p><div class="row"><a class="btn sec" href="?v=leave&p=' + encodeURIComponent(LV.project) + '" style="text-decoration:none">Another application</a>' + back() + '</div></div>';
+  }).catch(function (e) { fail(e, btn); });
+}
+
+/* ===== Monthly update ===== */
+var UP = null;
+function showUpdate(p, mr, t) {
+  p = needProject('update', p); if (!p) return;
+  setHeader('Monthly update · ' + p);
+  $('app').innerHTML = '<div class="load">Loading the staff list…</div>';
+  api('update.get', { project: p, mr: mr || '', t: t || '' }).then(function (r) { UP = r; UP.mr = mr || ''; UP.t = t || ''; UP.fresh = []; drawUpdate(); }).catch(function (e) { $('app').innerHTML = '<div class="err">' + h(e.message) + '</div>'; });
+}
+function opt(list, sel, blank) { return (blank ? '<option value="">' + h(blank) + '</option>' : '') + list.map(function (x) { return '<option' + (x === sel ? ' selected' : '') + '>' + h(x) + '</option>'; }).join(''); }
+function drawUpdate() {
+  var r = UP;
+  var stList = function (cur) { return r.statuses.indexOf(cur) > -1 ? r.statuses : [cur].concat(r.statuses); };
+  var rows = r.lines.map(function (l, i) {
+    return '<tr><td><b>' + h(l.name) + '</b><div class="mut sm">' + h(l.id) + ' · ' + h(l.position) + ' · ' + h(l.natCat || '') + (l.leave ? ' · on leave: ' + h(l.leave) : '') + '</div></td>' +
+      '<td><select id="u_s' + i + '">' + opt(stList(l.status), l.status) + '</select></td>' +
+      '<td><select id="u_r' + i + '">' + opt(ME.rotations, l.rotation, '— choose —') + '</select></td>' +
+      '<td><input id="u_b' + i + '" type="date" value="' + h(l.block) + '"></td>' +
+      '<td><input id="u_site' + i + '" value="' + h(l.site) + '" placeholder="Site"></td>' +
+      '<td><input id="u_m' + i + '" value="' + h(l.lastRemarks || '') + '" placeholder="Remarks">' + (l.needPersonalEmail ? '<input id="u_pe' + i + '" type="email" placeholder="Personal e-mail (missing)" style="margin-top:6px">' : '') + '</td></tr>';
+  }).join('');
+  $('app').innerHTML = '<div>' + back() + '</div>' + (r.submitted ? '<div class="note">Already submitted: ' + h(r.submitted) + '. You can submit again if something changed.</div>' : '') +
+    '<div class="card"><h2>1 · Staff, status &amp; work pattern — ' + h(r.month) + '</h2><div class="mut sm" style="margin-bottom:8px">A move off the project (bench, notice, resigned …) goes to HO HSE for approval. "Not on this project" becomes a transfer request.</div>' +
+    '<div class="scroll"><table><tr><th>Employee</th><th>Status</th><th>Work pattern</th><th>Current block started</th><th>Site</th><th>Remarks</th></tr>' + rows + '</table></div>' +
+    '<h3>Someone working with you who is not on the list</h3><div id="upNew">' + UP.fresh.map(function (n, k) { return '<div class="sm">' + h(n.name) + (n.id ? ' (' + h(n.id) + ')' : '') + ' · ' + h(n.position) + ' <a href="#" onclick="UP.fresh.splice(' + k + ',1);drawUpdate();return false">remove</a></div>'; }).join('') + '</div>' +
+    '<div class="grid" style="margin-top:6px"><input id="n_name" placeholder="Full name"><input id="n_id" placeholder="GPS ID (if known)"><input id="n_pos" placeholder="Designation"><input id="n_rem" placeholder="Remarks"></div><button class="btn sec" style="margin-top:8px" onclick="upAdd()">+ Add</button></div>' +
+    '<div class="card"><h2>2 · Leave plan</h2><div class="mut" style="margin-bottom:8px">Approved plan, next 3 months:</div>' +
+    (r.plan.length ? r.plan.map(function (l) { return '<span class="st" style="margin:0 6px 6px 0">' + h(l.name) + ' · ' + h(l.type) + ' · ' + d(l.aFrom) + ' – ' + d(l.aTo) + '</span>'; }).join('') : '<span class="mut">No approved leave in the next 3 months.</span>') +
+    '<div style="margin-top:12px"><span class="lb">Any change to the leave plan?</span>' + radios('pc', ['No change', 'Yes — open the annual plan after submitting'], 'No change') + '</div></div>' +
+    '<div class="card row" style="justify-content:space-between;background:var(--navy);color:#fff"><span>Status and work patterns are saved at once · moves off the project go to HO HSE for approval</span><button class="btn y" onclick="upSubmit(this)">Submit the update</button></div>';
+}
+function upAdd() { var n = { name: $('n_name').value.trim(), id: $('n_id').value.trim(), position: $('n_pos').value.trim(), remarks: $('n_rem').value.trim() }; if (!n.name) return toast('Enter the name'); UP.fresh.push(n); drawUpdate(); }
+function upSubmit(btn) {
+  var lines = UP.lines.map(function (l, i) { return { id: l.id, status: $('u_s' + i).value, rotation: $('u_r' + i).value, block: $('u_b' + i).value, site: $('u_site' + i).value, remarks: $('u_m' + i).value, personalEmail: $('u_pe' + i) ? $('u_pe' + i).value : '' }; });
+  var goPlan = radioVal('pc') !== 'No change';
+  busy(btn, true);
+  api('update.submit', { project: UP.project, data: { mr: UP.mr, t: UP.t, lines: lines, added: [], newStaff: UP.fresh } }).then(function (r) {
+    toast('Submitted' + (r.forApproval.length ? ' · ' + r.forApproval.length + ' for HO HSE approval' : ''));
+    if (goPlan) go('plan', { p: UP.project }); else $('app').innerHTML = '<div class="card"><h2>Thank you — submitted</h2><p>' + r.lines + ' people · ' + r.changes + ' change(s)' + (r.forApproval.length ? '<br>For HO HSE approval: ' + h(r.forApproval.join(', ')) : '') + '</p>' + back() + '</div>';
+  }).catch(function (e) { fail(e, btn); });
+}
+
+/* ===== Review ===== */
+var RV = null, RVT = 'apps', RVS = 'waiting';
+function showReviewList() {
+  setHeader('Review');
+  $('app').innerHTML = '<div class="load">Loading…</div>';
+  api('review.list').then(function (r) { RV = r; drawReviewList(); }).catch(function (e) { $('app').innerHTML = '<div class="err">' + h(e.message) + '</div>'; });
+}
+function drawReviewList() {
+  var w = function (s) { return RVS === 'all' || s === 'Pending' || s === 'Waiting'; };
+  var apps = RV.apps.filter(function (a) { return w(a.state); }), bats = RV.batches.filter(function (b) { return w(b.state); });
+  var tab = function (k, l) { return '<button class="' + (RVT === k ? 'on' : '') + '" onclick="RVT=\'' + k + '\';drawReviewList()">' + l + '</button>'; };
+  var body = RVT === 'apps'
+    ? (apps.length ? '<div class="scroll"><table><tr><th>ID</th><th>Employee</th><th>Project</th><th>Leave</th><th>Applied</th><th>State</th></tr>' + apps.map(function (a) {
+      return '<tr><td><a href="?v=review&a=' + encodeURIComponent(a.id) + '">' + h(a.id) + '</a></td><td>' + h(a.name) + '</td><td>' + h(a.project) + '</td><td>' + h(a.type) + ' ' + d(a.from) + ' – ' + d(a.to) + '</td><td>' + d(a.on) + '<div class="mut sm">' + h(a.by) + '</div></td><td><span class="st ' + stCls(a.state) + '">' + h(a.state) + '</span>' + (a.state === 'Approved' && !a.sentOn ? '<div class="mut sm">not yet sent to the applicant</div>' : '') + '</td></tr>';
+    }).join('') + '</table></div>' : '<div class="mut">Nothing here.</div>')
+    : (bats.length ? '<div class="scroll"><table><tr><th>ID</th><th>Project</th><th>Lines</th><th>Submitted</th><th>State</th></tr>' + bats.map(function (b) {
+      return '<tr><td><a href="?v=review&b=' + encodeURIComponent(b.id) + '">' + h(b.id) + '</a></td><td>' + h(b.project) + '</td><td>' + b.lines + '</td><td>' + d(b.on) + '<div class="mut sm">' + h(b.by) + '</div></td><td><span class="st ' + stCls(b.state) + '">' + h(b.state) + '</span></td></tr>';
+    }).join('') + '</table></div>' : '<div class="mut">Nothing here.</div>');
+  $('app').innerHTML = '<div>' + back() + '</div><div class="card"><div class="tabs">' + tab('apps', 'Leave applications (' + RV.apps.filter(function (a) { return a.state === 'Pending'; }).length + ' waiting)') +
+    tab('plans', 'Leave plans (' + RV.batches.filter(function (b) { return b.state === 'Waiting'; }).length + ' waiting)') + '</div>' +
+    '<label style="display:inline-flex;gap:6px;align-items:center;margin-bottom:10px;font-weight:500"><input type="checkbox"' + (RVS === 'all' ? ' checked' : '') + ' onchange="RVS=this.checked?\'all\':\'waiting\';drawReviewList()"> Show decided too</label>' + body + '</div>';
+}
+function showReviewApp(id) {
+  setHeader('Leave application ' + id);
+  $('app').innerHTML = '<div class="load">Loading…</div>';
+  api('review.app', { id: id }).then(function (r) {
+    var a = r.app, kv = function (k, v) { return '<div class="note" style="padding:10px"><span class="lb">' + h(k) + '</span>' + v + '</div>'; };
+    var open = a.state === 'Pending';
+    $('app').innerHTML = '<div><a href="?v=review">← Review list</a></div><div class="side"><div class="mainc"><div class="card"><h2>' + h(a.name) + ' · ' + h(a.type) + ' leave <span class="st ' + stCls(a.state) + '">' + h(a.state) + '</span></h2>' +
+      '<div class="mut" style="margin-bottom:10px">' + h(a.project) + ' · applied by ' + h(a.by) + ' · ' + d(a.on) + '</div><div class="grid">' +
+      kv('Employee', '<b>' + h(a.empId) + ' · ' + h(a.position) + '</b>') + kv('Leave', '<b>' + d(a.from) + ' – ' + d(a.to) + ' · ' + a.days + ' days</b>') + kv('Last leave', '<b>' + h(a.last || '—') + '</b>') +
+      kv('Replacement required', '<b>' + h(a.rep) + '</b><div class="sm">' + h(a.repRemarks) + '</div>') + kv('Client approval for the relief', '<b>' + h(a.client) + '</b><div class="sm">' + h(a.clientRemarks) + '</div>') +
+      kv('Attachments', a.attachments.map(function (x) { return '<div><a href="' + h(x.url) + '" target="_blank" rel="noopener">' + h(x.label) + '</a></div>'; }).join('') || '—') + '</div>' +
+      (a.cc ? '<div class="mut sm" style="margin-top:8px">CC: ' + h(a.cc) + '</div>' : '') +
+      (open ? '<div style="margin-top:14px"><label for="rvC">Comment (needed to send back or reject)</label><textarea id="rvC"></textarea><div class="row" style="margin-top:10px">' +
+        '<button class="btn ok" onclick="decide(\'' + h(a.id) + '\',\'approve\',this)">Approve</button><button class="btn warn" onclick="decide(\'' + h(a.id) + '\',\'back\',this)">Comment &amp; send back</button><button class="btn bad" onclick="decide(\'' + h(a.id) + '\',\'reject\',this)">Reject</button></div>' +
+        '<div class="mut sm" style="margin-top:8px">Approve: the leave goes into the leave register and the HO HSE team is asked to send the approval to the applicant.</div></div>'
+        : '<div class="note" style="margin-top:14px">' + h(a.state) + ' by ' + h(a.decidedBy) + (a.comment ? ' — ' + h(a.comment) : '') + (a.state === 'Approved' ? '<br>' + (a.sentOn ? 'Sent to the applicant on ' + d(a.sentOn) : 'Not yet sent to the applicant by the HO HSE team') : '') + '</div>') +
+      '</div></div><div class="aside"><div class="card"><h2 style="font-size:16px">System checks</h2>' + checksHtml(a.checks) + '</div></div></div>';
+  }).catch(function (e) { $('app').innerHTML = '<div class="err">' + h(e.message) + '</div>'; });
+}
+function decide(id, dec, btn) {
+  var c = $('rvC').value;
+  if (dec !== 'approve' && !c.trim()) return toast('Write a comment first');
+  busy(btn, true);
+  api('review.decideApp', { id: id, decision: dec, comment: c }).then(function (r) { toast(r.state); showReviewApp(id); }).catch(function (e) { fail(e, btn); });
+}
+var RB = null;
+function showReviewBatch(id) {
+  setHeader('Leave plan ' + id);
+  $('app').innerHTML = '<div class="load">Loading…</div>';
+  api('review.batch', { id: id }).then(function (r) {
+    RB = r;
+    var rows = r.lines.map(function (l) {
+      var pend = /pending/i.test(l.state), c = r.checks[l.pid];
+      return '<tr><td><b>' + h(l.name) + '</b></td><td>' + (l.state === 'Removal pending' ? '<b>Remove</b> ' + d(l.aFrom) + ' – ' + d(l.aTo) : h(l.type) + ' ' + d(l.from) + ' – ' + d(l.to) + (l.aFrom && l.state === 'Change pending' ? '<div class="mut sm">was ' + d(l.aFrom) + ' – ' + d(l.aTo) + '</div>' : '')) + '</td>' +
+        '<td class="sm">' + (c && c.required ? (c.shortDays ? '<span style="color:var(--red);font-weight:600">short ' + c.shortDays + ' day(s) from ' + d(c.first) + ' (lowest ' + c.min + ' / ' + c.required + ')</span>' : '<span style="color:var(--green)">OK (' + c.min + ' / ' + c.required + ')</span>') : '—') + '</td>' +
+        '<td>' + (pend ? radios('b_' + l.pid, ['Approve', 'Send back'], 'Approve') : '<span class="st ' + stCls(l.state) + '">' + h(l.state) + '</span>') + '</td></tr>';
+    }).join('');
+    var open = r.lines.some(function (l) { return /pending/i.test(l.state); });
+    $('app').innerHTML = '<div><a href="?v=review&RVT=plans">← Review list</a></div><div class="card"><h2>' + h(r.project) + ' · leave plan</h2><div class="mut" style="margin-bottom:10px">Submitted by ' + h(r.by) + ' · ' + d(r.on) + '</div>' +
+      '<div class="scroll"><table><tr><th>Employee</th><th>Leave</th><th>Cover</th><th>Decision</th></tr>' + rows + '</table></div>' +
+      (open ? '<label for="rbC" style="margin-top:12px">Comment (needed for lines sent back)</label><textarea id="rbC"></textarea><div class="row" style="margin-top:10px"><button class="btn ok" onclick="decideBatch(this)">Save decisions</button></div>' : (r.comment ? '<div class="note" style="margin-top:12px">Comment: ' + h(r.comment) + '</div>' : '')) + '</div>';
+  }).catch(function (e) { $('app').innerHTML = '<div class="err">' + h(e.message) + '</div>'; });
+}
+function decideBatch(btn) {
+  var dec = {};
+  RB.lines.forEach(function (l) { if (/pending/i.test(l.state)) dec[l.pid] = radioVal('b_' + l.pid) === 'Send back' ? 'back' : 'approve'; });
+  busy(btn, true);
+  api('review.decideBatch', { id: RB.id, decisions: dec, comment: $('rbC').value }).then(function (r) { toast(r.approved + ' approved · ' + r.back + ' sent back'); showReviewBatch(RB.id); }).catch(function (e) { fail(e, btn); });
+}
+
+route();
+</script>
+</body>
+</html>
